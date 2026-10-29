@@ -14,9 +14,6 @@ from app.extensions import db
 from app.middleware.auth import token_required
 from sqlalchemy import func
 from datetime import datetime, timedelta
-import pandas as pd
-import numpy as np
-from sklearn.linear_model import LinearRegression
 
 bp = Blueprint("analytics", __name__)
 
@@ -234,21 +231,41 @@ def predict_demand(current_user, product_id):
                 }
             )
 
-        df = pd.DataFrame(sales, columns=["date", "qty"])
-        df["date"] = pd.to_datetime(df["date"])
-        df["date_ordinal"] = df["date"].map(pd.Timestamp.toordinal)
+        try:
+            import pandas as pd
+            import numpy as np
+            from sklearn.linear_model import LinearRegression
 
-        X = df[["date_ordinal"]]
-        y = df["qty"]
+            df = pd.DataFrame(sales, columns=["date", "qty"])
+            df["date"] = pd.to_datetime(df["date"])
+            df["date_ordinal"] = df["date"].map(pd.Timestamp.toordinal)
 
-        model = LinearRegression()
-        model.fit(X, y)
+            X = df[["date_ordinal"]]
+            y = df["qty"]
 
-        future_dates = [df["date"].max() + pd.Timedelta(days=i) for i in range(1, 8)]
-        future_ordinals = np.array([d.toordinal() for d in future_dates]).reshape(-1, 1)
+            model = LinearRegression()
+            model.fit(X, y)
 
-        predictions = model.predict(future_ordinals)
-        predicted_demand = max(0, int(sum(predictions)))
+            future_dates = [df["date"].max() + pd.Timedelta(days=i) for i in range(1, 8)]
+            future_ordinals = np.array([d.toordinal() for d in future_dates]).reshape(-1, 1)
+
+            predictions = model.predict(future_ordinals)
+            predicted_demand = max(0, int(sum(predictions)))
+        except Exception:
+            # Fallback pure-Python linear regression
+            x_vals = list(range(len(sales)))
+            y_vals = [float(s[1] or 0) for s in sales]
+            n = len(x_vals)
+            sum_x = sum(x_vals)
+            sum_y = sum(y_vals)
+            sum_xy = sum(x * y for x, y in zip(x_vals, y_vals))
+            sum_x2 = sum(x * x for x in x_vals)
+            denom = (n * sum_x2 - sum_x * sum_x)
+            slope = (n * sum_xy - sum_x * sum_y) / denom if denom != 0 else 0
+            intercept = (sum_y - slope * sum_x) / n if n != 0 else 0
+
+            future_predictions = [max(0, slope * (n + i) + intercept) for i in range(7)]
+            predicted_demand = max(0, int(sum(future_predictions)))
 
         product = db.session.get(Product, product_id)
         if not product:

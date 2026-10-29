@@ -9,7 +9,12 @@ def create_app(config_class=Config):
 
     # Initialize extensions
     db.init_app(app)
-    cors.init_app(app)
+    cors.init_app(
+        app,
+        resources={r"/api/*": {"origins": "*"}},
+        allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"],
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    )
     compress.init_app(app)
 
     # Import models so they are registered
@@ -17,6 +22,20 @@ def create_app(config_class=Config):
         import app.models as _models
         _ = _models
         db.create_all()
+        try:
+            from app.models import User
+            if not User.query.filter_by(email="admin@crgarments.com").first():
+                admin = User(
+                    name="Super Admin",
+                    email="admin@crgarments.com",
+                    role="ADMIN",
+                    status=True
+                )
+                admin.set_password("admin123")
+                db.session.add(admin)
+                db.session.commit()
+        except Exception as e:
+            app.logger.warning(f"Initial admin setup skipped: {e}")
 
     # Register blueprints
     from app.routes.auth import bp as auth_bp
