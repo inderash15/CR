@@ -1,0 +1,9 @@
+{
+  "venvPath": ".",
+  "venv": "venv",
+  "extraPaths": ["."],
+  "reportCallIssue": "none",
+  "reportGeneralTypeIssues": "none",
+  "reportOptionalMemberAccess": "none",
+  "reportAttributeAccessIssue": "none"
+}

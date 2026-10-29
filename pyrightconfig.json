@@ -1,0 +1,14 @@
+{
+  "include": [
+    "CR-GARMENTS/backend"
+  ],
+  "venvPath": "CR-GARMENTS/backend",
+  "venv": "venv",
+  "extraPaths": [
+    "CR-GARMENTS/backend"
+  ],
+  "reportCallIssue": "none",
+  "reportGeneralTypeIssues": "none",
+  "reportOptionalMemberAccess": "none",
+  "reportAttributeAccessIssue": "none"
+}

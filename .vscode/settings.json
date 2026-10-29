@@ -1,0 +1,16 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/CR-GARMENTS/backend/venv/Scripts/python.exe",
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/CR-GARMENTS/backend"
+  ],
+  "python.autoComplete.extraPaths": [
+    "${workspaceFolder}/CR-GARMENTS/backend"
+  ],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticSeverityOverrides": {
+    "reportCallIssue": "none",
+    "reportGeneralTypeIssues": "none",
+    "reportOptionalMemberAccess": "none",
+    "reportAttributeAccessIssue": "none"
+  }
+}
