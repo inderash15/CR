@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { analyticsAPI, ordersAPI } from '../services/api';
 import './Dashboard.css';
 import {
+  BarChart3,
   Package,
   Users,
   ShoppingCart,
@@ -64,9 +65,19 @@ const Dashboard = () => {
   return (
     <div className="admin-dashboard-container">
       {/* Top Header */}
-      <div className="dashboard-header-clean">
-        <h2>Executive Overview</h2>
-        <p>Real-time financial turnover, stock health, and team performance.</p>
+      <div className="dashboard-header-clean" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <h2>Executive Overview</h2>
+          <p>Real-time financial turnover, stock health, and team performance.</p>
+        </div>
+        <button
+          className="btn-create-primary"
+          onClick={() => navigate('/admin/reports')}
+          style={{ padding: '9px 18px', fontSize: 13 }}
+        >
+          <BarChart3 size={16} />
+          <span>Orders Report</span>
+        </button>
       </div>
 
       {/* KPI Cards Grid */}
@@ -273,11 +284,16 @@ const Dashboard = () => {
           <div className="card-inner-header">
             <div>
               <h3>Recent Customer Orders</h3>
-              <p>Latest pending and confirmed orders</p>
+              <p>Latest pending and ongoing fulfillment pipeline</p>
             </div>
-            <button className="text-link-btn" onClick={() => navigate('/admin/orders')}>
-              All Orders <ChevronRight size={14} />
-            </button>
+            <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+              <button className="text-link-btn" onClick={() => navigate('/admin/reports')} style={{ fontWeight: 700, color: '#4338ca' }}>
+                Full Report <ChevronRight size={14} />
+              </button>
+              <button className="text-link-btn" onClick={() => navigate('/admin/orders')}>
+                Manage <ChevronRight size={14} />
+              </button>
+            </div>
           </div>
 
           <div className="alerts-table-wrapper">

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import Supplier
+from app.models import Supplier, Purchase, PurchaseItem
 from app.extensions import db
 from app.middleware.auth import token_required
 
@@ -96,6 +96,12 @@ def delete_supplier(current_user, id):
         supplier = db.session.get(Supplier, id)
         if not supplier:
             return jsonify({"success": False, "message": "Supplier not found"}), 404
+
+        # Clean up related purchases and purchase items
+        purchases = Purchase.query.filter_by(supplier_id=id).all()
+        for p in purchases:
+            PurchaseItem.query.filter_by(purchase_id=p.id).delete()
+            db.session.delete(p)
 
         db.session.delete(supplier)
         db.session.commit()

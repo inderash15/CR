@@ -81,6 +81,19 @@ const Tasks = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this task?")) {
+      try {
+        const res = await tasksAPI.delete(id);
+        if (res.data.success) {
+          fetchData();
+        }
+      } catch (err) {
+        alert("Failed to delete task: " + (err.response?.data?.message || err.message));
+      }
+    }
+  };
+
   const filteredTasks = useMemo(() => {
     return tasks.filter(t => {
       const matchesSearch =
@@ -272,16 +285,27 @@ const Tasks = () => {
                     </span>
                   </td>
                   <td>
-                    {t.status !== 'Completed' ? (
-                      <button
-                        className="btn-table-action"
-                        onClick={() => handleUpdateProgress(t.id, 100, 'Completed')}
-                      >
-                        <Check size={12} style={{ display: 'inline', marginRight: 4 }} /> Complete
-                      </button>
-                    ) : (
-                      <span style={{ color: '#10b981', fontWeight: 700, fontSize: 13 }}>✓ Done</span>
-                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {t.status !== 'Completed' ? (
+                        <button
+                          className="btn-table-action"
+                          onClick={() => handleUpdateProgress(t.id, 100, 'Completed')}
+                        >
+                          <Check size={12} style={{ display: 'inline', marginRight: 4 }} /> Complete
+                        </button>
+                      ) : (
+                        <span style={{ color: '#10b981', fontWeight: 700, fontSize: 13, marginRight: 4 }}>✓ Done</span>
+                      )}
+                      {(role === 'ADMIN' || role === 'MANAGER') && (
+                        <button
+                          className="icon-action-btn"
+                          title="Delete Task"
+                          onClick={() => handleDelete(t.id)}
+                        >
+                          <Trash2 size={14} color="#ef4444" />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

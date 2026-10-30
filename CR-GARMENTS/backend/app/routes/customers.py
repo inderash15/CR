@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import Customer
+from app.models import Customer, Order, OrderItem, Sale
 from app.extensions import db
 from app.middleware.auth import token_required
 
@@ -32,9 +32,30 @@ def get_customers(current_user):
 def create_customer(current_user):
     data = request.get_json() or {}
     try:
+        raw_phone = str(data.get("phone", "")).strip()
+        phone_digits = "".join(filter(str.isdigit, raw_phone))
+
+        if len(phone_digits) < 10:
+            return (
+                jsonify({
+                    "success": False,
+                    "message": f"Phone number must be exactly 10 digits. You entered {len(phone_digits)} digit(s) (less than 10)."
+                }),
+                400,
+            )
+
+        if len(phone_digits) > 10:
+            return (
+                jsonify({
+                    "success": False,
+                    "message": f"Phone number must be exactly 10 digits. You entered {len(phone_digits)} digit(s) (greater than 10)."
+                }),
+                400,
+            )
+
         new_customer = Customer(
             name=data["name"],
-            phone=data.get("phone", ""),
+            phone=phone_digits,
             email=data.get("email", ""),
             address=data.get("address", ""),
             city=data.get("city", ""),
@@ -60,8 +81,31 @@ def update_customer(current_user, id):
         if not customer:
             return jsonify({"success": False, "message": "Customer not found"}), 404
 
+        if "phone" in data:
+            raw_phone = str(data["phone"]).strip()
+            phone_digits = "".join(filter(str.isdigit, raw_phone))
+
+            if len(phone_digits) < 10:
+                return (
+                    jsonify({
+                        "success": False,
+                        "message": f"Phone number must be exactly 10 digits. You entered {len(phone_digits)} digit(s) (less than 10)."
+                    }),
+                    400,
+                )
+
+            if len(phone_digits) > 10:
+                return (
+                    jsonify({
+                        "success": False,
+                        "message": f"Phone number must be exactly 10 digits. You entered {len(phone_digits)} digit(s) (greater than 10)."
+                    }),
+                    400,
+                )
+
+            customer.phone = phone_digits
+
         customer.name = data.get("name", customer.name)
-        customer.phone = data.get("phone", customer.phone)
         customer.email = data.get("email", customer.email)
         customer.address = data.get("address", customer.address)
         customer.city = data.get("city", customer.city)
@@ -85,6 +129,15 @@ def delete_customer(current_user, id):
         customer = db.session.get(Customer, id)
         if not customer:
             return jsonify({"success": False, "message": "Customer not found"}), 404
+
+        # Clean up related orders and order items
+        orders = Order.query.filter_by(customer_id=id).all()
+        for o in orders:
+            OrderItem.query.filter_by(order_id=o.id).delete()
+            db.session.delete(o)
+
+        # Unlink sales record from customer
+        Sale.query.filter_by(customer_id=id).update({"customer_id": None})
 
         db.session.delete(customer)
         db.session.commit()

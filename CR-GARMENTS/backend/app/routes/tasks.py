@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import Task, User
+from app.models import Task, User, TaskComment
 from app.extensions import db
 from app.middleware.auth import token_required
 from datetime import datetime
@@ -140,6 +140,7 @@ def delete_task(current_user, id):
         if not task:
             return jsonify({"success": False, "message": "Task not found"}), 404
 
+        TaskComment.query.filter_by(task_id=id).delete()
         db.session.delete(task)
         db.session.commit()
         return jsonify({"success": True, "message": "Task deleted successfully"})

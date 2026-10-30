@@ -78,7 +78,8 @@ export const ordersAPI = {
 export const tasksAPI = {
   getAll: () => api.get('/tasks/'),
   create: (data) => api.post('/tasks/', data),
-  updateProgress: (id, data) => api.put(`/tasks/${id}/progress`, data)
+  updateProgress: (id, data) => api.put(`/tasks/${id}/progress`, data),
+  delete: (id) => api.delete(`/tasks/${id}`),
 };
 
 export default api;

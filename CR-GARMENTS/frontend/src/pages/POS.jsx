@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { productsAPI, salesAPI, customersAPI, categoriesAPI } from '../services/api';
 import { generateInvoice } from '../utils/invoiceGenerator';
 import './POS.css';
+import DevasreeQRCode from '../components/DevasreeQRCode';
 import {
   Search,
   ShoppingCart,
@@ -11,7 +12,6 @@ import {
   Minus,
   X,
   CheckCircle,
-  CreditCard,
   Banknote,
   QrCode,
   Printer,
@@ -582,14 +582,12 @@ const POS = () => {
               >
                 <QrCode size={15} /> UPI / QR
               </button>
-              <button
-                type="button"
-                className={`payment-mode-chip ${paymentMethod === 'CARD' ? 'active' : ''}`}
-                onClick={() => setPaymentMethod('CARD')}
-              >
-                <CreditCard size={15} /> Card
-              </button>
             </div>
+
+            {/* Devasree UPI / QR Code display when UPI / QR is selected */}
+            {paymentMethod === 'UPI' && (
+              <DevasreeQRCode amount={grandTotal} />
+            )}
           </div>
 
           {/* Grand Total */}

@@ -83,10 +83,25 @@ const Customers = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const phoneStr = (formData.phone || '').trim();
+    const phoneDigits = phoneStr.replace(/\D/g, '');
+
+    if (phoneDigits.length < 10) {
+      alert(`Invalid Phone Number!\n\nPhone number must be exactly 10 digits.\nYou entered ${phoneDigits.length} digit${phoneDigits.length === 1 ? '' : 's'} (less than 10).`);
+      return;
+    }
+
+    if (phoneDigits.length > 10) {
+      alert(`Invalid Phone Number!\n\nPhone number must be exactly 10 digits.\nYou entered ${phoneDigits.length} digits (greater than 10).`);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const payload = {
         ...formData,
+        phone: phoneDigits,
         loyalty_points: parseInt(formData.loyalty_points) || 0
       };
 
@@ -279,7 +294,7 @@ const Customers = () => {
 
                 <div className="form-grid-2">
                   <div className="form-group-item">
-                    <label>Phone Number *</label>
+                    <label>Phone Number * (10 digits)</label>
                     <input
                       type="text"
                       required

@@ -10,6 +10,7 @@ import {
   Building2,
   FileText,
   CheckSquare,
+  BarChart3,
   Clock,
   Bell,
   Sun,
@@ -240,6 +241,16 @@ const DashboardLayout = () => {
                   <span className="link-text">Manage Orders</span>
                 </NavLink>
               </li>
+
+              {/* Reports (Admin & Manager) */}
+              {(role === 'ADMIN' || role === 'MANAGER') && (
+                <li>
+                  <NavLink to={`${basePath}/reports`} className="menu-nav-link" title="Orders Report">
+                    <BarChart3 className="nav-icon" />
+                    <span className="link-text">Orders Report</span>
+                  </NavLink>
+                </li>
+              )}
 
               {/* POS / Checkout (All roles) */}
               <li>

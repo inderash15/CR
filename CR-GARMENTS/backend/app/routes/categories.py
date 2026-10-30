@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.models import Category
+from app.models import Category, Product
 from app.extensions import db
 from app.middleware.auth import token_required
 
@@ -67,6 +67,18 @@ def delete_category(current_user, id):
         category = db.session.get(Category, id)
         if not category:
             return jsonify({"success": False, "message": "Category not found"}), 404
+
+        # If category has products, safely reassign them to 'Uncategorized'
+        if category.products:
+            uncat = Category.query.filter(Category.name == "Uncategorized", Category.id != category.id).first()
+            if not uncat:
+                uncat = Category(name="Uncategorized")
+                db.session.add(uncat)
+                db.session.flush()
+
+            for prod in list(category.products):
+                prod.category = uncat
+                prod.category_id = uncat.id
 
         db.session.delete(category)
         db.session.commit()

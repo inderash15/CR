@@ -19,6 +19,7 @@ const Purchases = lazy(() => import('./pages/Purchases'));
 const Orders = lazy(() => import('./pages/Orders'));
 const ProductCatalog = lazy(() => import('./pages/ProductCatalog'));
 const Tasks = lazy(() => import('./pages/Tasks'));
+const Reports = lazy(() => import('./pages/Reports'));
 
 // Loading fallback component
 const PageLoader = () => (
@@ -84,6 +85,7 @@ function App() {
           <Route path="purchases" element={<Suspense fallback={<PageLoader />}><Purchases /></Suspense>} />
           <Route path="pos" element={<Suspense fallback={<PageLoader />}><POS /></Suspense>} />
           <Route path="tasks" element={<Suspense fallback={<PageLoader />}><Tasks /></Suspense>} />
+          <Route path="reports" element={<Suspense fallback={<PageLoader />}><Reports /></Suspense>} />
         </Route>
 
         {/* MANAGER ROUTES */}
@@ -101,6 +103,7 @@ function App() {
           <Route path="purchases" element={<Suspense fallback={<PageLoader />}><Purchases /></Suspense>} />
           <Route path="pos" element={<Suspense fallback={<PageLoader />}><POS /></Suspense>} />
           <Route path="tasks" element={<Suspense fallback={<PageLoader />}><Tasks /></Suspense>} />
+          <Route path="reports" element={<Suspense fallback={<PageLoader />}><Reports /></Suspense>} />
         </Route>
 
         {/* EMPLOYEE ROUTES */}

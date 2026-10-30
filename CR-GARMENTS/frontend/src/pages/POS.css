@@ -691,7 +691,7 @@
 
 .payment-modes-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 6px;
 }
 
@@ -946,4 +946,170 @@
 
 .btn-receipt-primary:hover {
   background: #3730a3;
+}
+
+/* Devasree UPI / QR Payment Display */
+.pos-upi-qr-card {
+  margin-top: 8px;
+  background: #ffffff;
+  border: 1.5px solid #e0e7ff;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: fadeInQr 0.2s ease-in-out;
+}
+
+@keyframes fadeInQr {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pos-upi-qr-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed #e2e8f0;
+  padding-bottom: 8px;
+}
+
+.pos-upi-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #4338ca, #6366f1);
+  color: #ffffff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.pos-upi-badge span {
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.pos-upi-verified {
+  font-size: 11px;
+  font-weight: 600;
+  color: #059669;
+  display: flex;
+  align-items: center;
+}
+
+.pos-upi-qr-box {
+  background: #ffffff;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pos-upi-qr-img {
+  width: 140px;
+  height: 140px;
+  display: block;
+}
+
+.pos-upi-qr-svg {
+  width: 140px;
+  height: 140px;
+  display: block;
+}
+
+.pos-upi-info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+}
+
+.pos-upi-payee-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.pos-upi-id-pill {
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.pos-upi-id-pill span {
+  color: #4338ca;
+  font-family: monospace;
+  font-size: 11.5px;
+}
+
+.pos-upi-amount-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.pos-upi-amount-val {
+  font-size: 14px;
+  font-weight: 800;
+  color: #059669;
+}
+
+.pos-upi-apps-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding-top: 6px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.pos-app-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.pos-app-pill.gpay {
+  background: #e8f0fe;
+  color: #1a73e8;
+}
+
+.pos-app-pill.phonepe {
+  background: #f3e8ff;
+  color: #6739b7;
+}
+
+.pos-app-pill.paytm {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.pos-app-pill.bhim {
+  background: #ecfdf5;
+  color: #059669;
 }

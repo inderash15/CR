@@ -1,5 +1,12 @@
 from flask import Blueprint, request, jsonify
-from app.models import Product
+from app.models import (
+    Product,
+    PurchaseItem,
+    SaleItem,
+    OrderItem,
+    ReturnItem,
+    StockMovement,
+)
 from app.extensions import db
 from app.middleware.auth import token_required
 from sqlalchemy.orm import joinedload
@@ -114,13 +121,20 @@ def update_product(current_user, id):
 @bp.route("/<int:id>", methods=["DELETE"])
 @token_required
 def delete_product(current_user, id):
-    if current_user.role != "ADMIN":
+    if current_user.role not in ["ADMIN", "MANAGER"]:
         return jsonify({"success": False, "message": "Unauthorized"}), 403
 
     try:
         product = db.session.get(Product, id)
         if not product:
             return jsonify({"success": False, "message": "Product not found"}), 404
+
+        # Clean up all related items and stock movements to allow clean deletion
+        StockMovement.query.filter_by(product_id=id).delete()
+        OrderItem.query.filter_by(product_id=id).delete()
+        SaleItem.query.filter_by(product_id=id).delete()
+        PurchaseItem.query.filter_by(product_id=id).delete()
+        ReturnItem.query.filter_by(product_id=id).delete()
 
         db.session.delete(product)
         db.session.commit()
